@@ -14,16 +14,6 @@ o	Mất khả năng sẵn sàng (Availability Impact - High): Gây ngưng trệ 
 •	Rủi ro leo thang đặc quyền & Chiếm quyền quản trị cao nhất (Privilege Escalation)
 o	Nếu nạn nhân dính payload là Admin/Super Admin, kẻ tấn công nghiễm nhiên nắm quyền tối cao trên toàn bộ hệ thống RMM mà không cần tốn thêm công sức leo thang đặc quyền.
 
-**Vị trí:**
-URL	Param
-POST /clients/
-PUT /clients/
-PUT /clients/sites/
-POST /automation/policies/
-PUT /automation/policies/
-POST /scripts/
-PUT /scripts/	name
-
 
 **Bằng chứng:**
 
