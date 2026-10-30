@@ -1,4 +1,4 @@
-**Lỗ hổng :** Lưu trữ mã bất hợp pháp (Stored XSS) tại chức năng quản lý tên thiết bị/policy/script/client/site dẫn đến nguy cơ thực thi lệnh trái phép trong phiên làm việc của quản trị viên, chiếm quyền kiểm soát tài khoản hàng loạt
+# **Lỗ hổng :** Lưu trữ mã bất hợp pháp (Stored XSS) tại chức năng quản lý tên thiết bị/policy/script/client/site dẫn đến nguy cơ thực thi lệnh trái phép trong phiên làm việc của quản trị viên, chiếm quyền kiểm soát tài khoản hàng loạt
 
 **Mô tả:** Ứng dụng không thực hiện việc lọc dữ liệu đầu vào và mã hóa dữ liệu đầu ra đối với trường thông tin tên thiết bị, tên policy, script, client và site. Khi người dùng nhập chuỗi mã HTML/JavaScript độc hại vào các trường này, dữ liệu sẽ được lưu trực tiếp vào CSDL.
 Mã độc sẽ tự động thực thi trên trình duyệt của bất kỳ người dùng nào (đặc biệt là Quản trị viên/Kỹ thuật viên) khi họ truy cập vào danh sách quản lý hoặc mở các ô chọn thả xuống (Dropdown) chứa các đối tượng này.
