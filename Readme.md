@@ -4,15 +4,16 @@
 Mã độc sẽ tự động thực thi trên trình duyệt của bất kỳ người dùng nào (đặc biệt là Quản trị viên/Kỹ thuật viên) khi họ truy cập vào danh sách quản lý hoặc mở các ô chọn thả xuống (Dropdown) chứa các đối tượng này.
 
 **Nguy cơ:**
-•	Chiếm đoạt quyền kiểm soát tài khoản (Account Takeover - ATO)
-o	Thao tác mạo danh: Kẻ tấn công đính kèm access_token thu thập được vào API header để giả mạo nạn nhân thực hiện toàn bộ chức năng: thay đổi thông tin cá nhân, đổi mật khẩu, xóa/thêm cấu hình xác thực 2FA.
-o	Bypass xác thực: Bỏ qua hoàn toàn các lớp bảo mật bề mặt (mật khẩu mạnh, OTP/2FA) vì token thu được đã đại diện cho một phiên làm việc hợp lệ.
-•	Rủi ro tác động hạ tầng RMM (Critical Infrastructure Threat)
-o	Đánh sập/Thao túng thiết bị hàng loạt (Mass Device Disruption): Nếu tài khoản bị chiếm đoạt sở hữu quyền quản trị hệ thống RMM, kẻ tấn công có thể lợi dụng các API quản lý để gửi lệnh tắt máy, reboot, ngắt kết nối mạng hoặc hủy dịch vụ trên tất cả các Endpoint/Agent thuộc quyền quản lý của tài khoản đó.
-o	Thực thi mã từ xa hàng loạt (Mass Remote Code Execution - RCE): Thông qua tính năng chạy Script/Command tự động của RMM, kẻ tấn công có thể phát tán Malware, Ransomware hoặc script độc hại (đã đề xuất) để xóa sạch dữ liệu trên toàn bộ danh sách thiết bị chỉ với một lệnh duy nhất.
-o	Mất khả năng sẵn sàng (Availability Impact - High): Gây ngưng trệ toàn bộ hoạt động vận hành của doanh nghiệp, làm gián đoạn các dịch vụ CNTT cốt lõi.
-•	Rủi ro leo thang đặc quyền & Chiếm quyền quản trị cao nhất (Privilege Escalation)
-o	Nếu nạn nhân dính payload là Admin/Super Admin, kẻ tấn công nghiễm nhiên nắm quyền tối cao trên toàn bộ hệ thống RMM mà không cần tốn thêm công sức leo thang đặc quyền.
+- **Chiếm đoạt quyền kiểm soát tài khoản (Account Takeover - ATO)**
+  - **Thao tác mạo danh:** Kẻ tấn công đính kèm `access_token` thu thập được vào API header để giả mạo nạn nhân thực hiện toàn bộ chức năng: thay đổi thông tin cá nhân, đổi mật khẩu, xóa/thêm cấu hình xác thực 2FA.
+  - **Bypass xác thực:** Bỏ qua hoàn toàn các lớp bảo mật bề mặt (mật khẩu mạnh, OTP/2FA) vì token thu được đã đại diện cho một phiên làm việc hợp lệ.
+- **Rủi ro tác động hạ tầng RMM (Critical Infrastructure Threat)**
+  - **Đánh sập/Thao túng thiết bị hàng loạt (Mass Device Disruption):** Nếu tài khoản bị chiếm đoạt sở hữu quyền quản trị hệ thống RMM, kẻ tấn công có thể lợi dụng các API quản lý để gửi lệnh tắt máy, reboot, ngắt kết nối mạng hoặc hủy dịch vụ trên tất cả các Endpoint/Agent thuộc quyền quản lý của tài khoản đó.
+  - **Thực thi mã từ xa hàng loạt (Mass Remote Code Execution - RCE):** Thông qua tính năng chạy Script/Command tự động của RMM, kẻ tấn công có thể phát tán Malware, Ransomware hoặc script độc hại (đã đề xuất) để xóa sạch dữ liệu trên toàn bộ danh sách thiết bị chỉ với một lệnh duy nhất.
+  - **Mất khả năng sẵn sàng (Availability Impact - High):** Gây ngưng trệ toàn bộ hoạt động vận hành của doanh nghiệp, làm gián đoạn các dịch vụ CNTT cốt lõi.
+- **Rủi ro leo thang đặc quyền & Chiếm quyền quản trị cao nhất (Privilege Escalation)**
+  - **Tác động:** Nếu nạn nhân dính payload là Admin/Super Admin, kẻ tấn công nghiễm nhiên nắm quyền tối cao trên toàn bộ hệ thống RMM mà không cần tốn thêm công sức leo thang đặc quyền.
+  
 
 **Vị trí**
 | Vị trí | Param |
