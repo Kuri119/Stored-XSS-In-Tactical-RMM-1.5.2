@@ -14,30 +14,48 @@ o	Mất khả năng sẵn sàng (Availability Impact - High): Gây ngưng trệ 
 •	Rủi ro leo thang đặc quyền & Chiếm quyền quản trị cao nhất (Privilege Escalation)
 o	Nếu nạn nhân dính payload là Admin/Super Admin, kẻ tấn công nghiễm nhiên nắm quyền tối cao trên toàn bộ hệ thống RMM mà không cần tốn thêm công sức leo thang đặc quyền.
 
+**Vị trí**
+POST /clients/
+PUT /clients/
+PUT /clients/sites/
+POST /automation/policies/
+PUT /automation/policies/
+POST /scripts/
+PUT /scripts/
+
 
 **Bằng chứng:**
 
 Kịch bản tấn công ở đây, ta sử dụng tài khoản longnbh_2 (người dùng có quyền hạn chế) sẽ thực hiện stored XSS vào tên client và khi nạn nhân (ở đây là longnbh - admin) thực hiện chức năng dropdown để tìm client trong chức năng Audit log thì sẽ kích hoạt payload dẫn tới Authorization token của nạn nhân được chuyền về cho kẻ tấn công lại webhook và từ đây kẻ tấn công chiếm đoạt hoàn toàn tài khoản nạn nhân.
 
 ![image](https://github.com/Kuri119/Stored-XSS-In-Tactical-RMM-1.5.2/blob/main/POC/Screenshot%202026-10-30%20103703.png)
+![image](https://github.com/Kuri119/Stored-XSS-In-Tactical-RMM-1.5.2/blob/main/POC/Screenshot%202026-10-30%20103743.png)
  
 
 **Bước 1: Thực hiện điền stored XSS**
 Để có client với tên là stored XSS thì ta có thể tạo hoặc edit tên một client đã có từ trước, đây là ta thực hiện edit một client đã có từ trước.
-Chức năng edit client (PUT /clients/)
+**Chức năng edit client (PUT /clients/)**
+![image](https://github.com/Kuri119/Stored-XSS-In-Tactical-RMM-1.5.2/blob/main/POC/Screenshot%202026-10-30%20103801.png)
+![image](https://github.com/Kuri119/Stored-XSS-In-Tactical-RMM-1.5.2/blob/main/POC/Screenshot%202026-10-30%20103809.png)
   
 Khi nạn nhân truy cập vào audit log, chọn dropdown client, thông báo hiện ra cho thấy script XSS đã được thực thi thành công.
+![image](https://github.com/Kuri119/Stored-XSS-In-Tactical-RMM-1.5.2/blob/main/POC/Screenshot%202026-10-30%20103818.png)
  
 Cùng kịch bản này thay vì script alert() ta có thể thay bằng mã lệnh độc hại nhằm thu thập thông tin Authorization token của người dùng khi họ bị dính payload.
+![image](https://github.com/Kuri119/Stored-XSS-In-Tactical-RMM-1.5.2/blob/main/POC/Screenshot%202026-10-30%20103825.png)
  
 
 **Bước 2: Nạn nhân khi thực hiện chức năng dropdown để chọn clients**
 Người dùng admin (longnbh) thực hiện truy cập vào audio log và chọn phần dropdown clients
+![image](https://github.com/Kuri119/Stored-XSS-In-Tactical-RMM-1.5.2/blob/main/POC/Screenshot%202026-10-30%20103835.png)
+![image](https://github.com/Kuri119/Stored-XSS-In-Tactical-RMM-1.5.2/blob/main/POC/Screenshot%202026-10-30%20103856.png)
  
  
 
 **Bước 3: Thay đổi mật khẩu và 2FA người dùng bắt được, chiếm quyền kiểm soát tài khoản thành công**
 Từ token có được kẻ tấn công thực hiện thao tác thay đổi mật khẩu người dùng và reset 2FA chiếm quyền kiểm soát tài khoản nạn nhân.
+![image](https://github.com/Kuri119/Stored-XSS-In-Tactical-RMM-1.5.2/blob/main/POC/Screenshot%202026-10-30%20103919.png)
+![image](https://github.com/Kuri119/Stored-XSS-In-Tactical-RMM-1.5.2/blob/main/POC/Screenshot%202026-10-30%20103930.png)
  
  
 Mật khẩu và 2FA đã được đổi, từ đấy kẻ tấn công chiếm hoàn toàn tài khoản admin longnbh
