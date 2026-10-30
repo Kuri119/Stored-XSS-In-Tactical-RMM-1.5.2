@@ -18,7 +18,8 @@ o	Nếu nạn nhân dính payload là Admin/Super Admin, kẻ tấn công nghi�
 **Bằng chứng:**
 
 Kịch bản tấn công ở đây, ta sử dụng tài khoản longnbh_2 (người dùng có quyền hạn chế) sẽ thực hiện stored XSS vào tên client và khi nạn nhân (ở đây là longnbh - admin) thực hiện chức năng dropdown để tìm client trong chức năng Audit log thì sẽ kích hoạt payload dẫn tới Authorization token của nạn nhân được chuyền về cho kẻ tấn công lại webhook và từ đây kẻ tấn công chiếm đoạt hoàn toàn tài khoản nạn nhân.
-!(POC/Screenshot 2026-10-30 103703.png) 
+
+![image](https://github.com/Kuri119/Stored-XSS-In-Tactical-RMM-1.5.2/blob/main/POC/Screenshot%202026-10-30%20103703.png)
  
 
 **Bước 1: Thực hiện điền stored XSS**
