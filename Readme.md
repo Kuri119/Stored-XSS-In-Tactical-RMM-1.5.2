@@ -35,32 +35,39 @@ Kịch bản tấn công ở đây, ta sử dụng tài khoản longnbh_2 (ngư�
  
 
 **Bước 1: Thực hiện điền stored XSS**
+
 Để có client với tên là stored XSS thì ta có thể tạo hoặc edit tên một client đã có từ trước, đây là ta thực hiện edit một client đã có từ trước.
 
 **Chức năng edit client (PUT /clients/)**
+
 ![image](https://github.com/Kuri119/Stored-XSS-In-Tactical-RMM-1.5.2/blob/main/POC/Screenshot%202026-10-30%20103801.png)
 ![image](https://github.com/Kuri119/Stored-XSS-In-Tactical-RMM-1.5.2/blob/main/POC/Screenshot%202026-10-30%20103809.png)
   
 Khi nạn nhân truy cập vào audit log, chọn dropdown client, thông báo hiện ra cho thấy script XSS đã được thực thi thành công.
+
 ![image](https://github.com/Kuri119/Stored-XSS-In-Tactical-RMM-1.5.2/blob/main/POC/Screenshot%202026-10-30%20103818.png)
  
 Cùng kịch bản này thay vì script alert() ta có thể thay bằng mã lệnh độc hại nhằm thu thập thông tin Authorization token của người dùng khi họ bị dính payload.
+
 ![image](https://github.com/Kuri119/Stored-XSS-In-Tactical-RMM-1.5.2/blob/main/POC/Screenshot%202026-10-30%20103825.png)
  
 
 **Bước 2: Nạn nhân khi thực hiện chức năng dropdown để chọn clients**
 Người dùng admin (longnbh) thực hiện truy cập vào audio log và chọn phần dropdown clients
+
 ![image](https://github.com/Kuri119/Stored-XSS-In-Tactical-RMM-1.5.2/blob/main/POC/Screenshot%202026-10-30%20103835.png)
 ![image](https://github.com/Kuri119/Stored-XSS-In-Tactical-RMM-1.5.2/blob/main/POC/Screenshot%202026-10-30%20103856.png)
  
  
 
 **Bước 3: Thay đổi mật khẩu và 2FA người dùng bắt được, chiếm quyền kiểm soát tài khoản thành công**
+
 Từ token có được kẻ tấn công thực hiện thao tác thay đổi mật khẩu người dùng và reset 2FA chiếm quyền kiểm soát tài khoản nạn nhân.
+
 ![image](https://github.com/Kuri119/Stored-XSS-In-Tactical-RMM-1.5.2/blob/main/POC/Screenshot%202026-10-30%20103919.png)
 ![image](https://github.com/Kuri119/Stored-XSS-In-Tactical-RMM-1.5.2/blob/main/POC/Screenshot%202026-10-30%20103930.png)
  
  
 Mật khẩu và 2FA đã được đổi, từ đấy kẻ tấn công chiếm hoàn toàn tài khoản admin longnbh
 
-Lưu ý: Ta có thể thực hiện các thao tác nhúng payload tương tự trong các chức năng thêm và sửa site, script, policy và payload sẽ thực thi khi người dùng truy cập vào dropdown chứa các đối tượng bị nhúng này.
+**Lưu ý:** Ta có thể thực hiện các thao tác nhúng payload tương tự trong các chức năng thêm và sửa site, script, policy và payload sẽ thực thi khi người dùng truy cập vào dropdown chứa các đối tượng bị nhúng này.
