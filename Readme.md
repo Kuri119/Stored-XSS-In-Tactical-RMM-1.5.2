@@ -1,5 +1,9 @@
 # Stored Cross-Site Scripting (Stored XSS) in Device/Policy/Script/Client/Site Name Management Leading to Unauthorized Execution in Admin Session and Mass Account Takeover
 
+**Affected:** tactical RMM v1.5.2
+
+**CVE:** Waiting
+
 **Description:** The application fails to properly sanitize user input and encode output for input fields including device name, policy name, script, client, and site. When a user inputs malicious HTML/JavaScript payloads into these fields, the data is stored directly in the database. 
 The malicious code automatically executes in the browser of any user (especially Administrators/Technicians) who views the management list or interacts with dropdown menus containing these compromised objects.
 
