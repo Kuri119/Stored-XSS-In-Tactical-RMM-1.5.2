@@ -1,22 +1,22 @@
-# Lưu trữ mã bất hợp pháp (Stored XSS) tại chức năng quản lý tên thiết bị/policy/script/client/site dẫn đến nguy cơ thực thi lệnh trái phép trong phiên làm việc của quản trị viên, chiếm quyền kiểm soát tài khoản hàng loạt
+# Stored Cross-Site Scripting (Stored XSS) in Device/Policy/Script/Client/Site Name Management Leading to Unauthorized Execution in Admin Session and Mass Account Takeover
 
-**Mô tả:** Ứng dụng không thực hiện việc lọc dữ liệu đầu vào và mã hóa dữ liệu đầu ra đối với trường thông tin tên thiết bị, tên policy, script, client và site. Khi người dùng nhập chuỗi mã HTML/JavaScript độc hại vào các trường này, dữ liệu sẽ được lưu trực tiếp vào CSDL.
-Mã độc sẽ tự động thực thi trên trình duyệt của bất kỳ người dùng nào (đặc biệt là Quản trị viên/Kỹ thuật viên) khi họ truy cập vào danh sách quản lý hoặc mở các ô chọn thả xuống (Dropdown) chứa các đối tượng này.
+**Description:** The application fails to properly sanitize user input and encode output for input fields including device name, policy name, script, client, and site. When a user inputs malicious HTML/JavaScript payloads into these fields, the data is stored directly in the database. 
+The malicious code automatically executes in the browser of any user (especially Administrators/Technicians) who views the management list or interacts with dropdown menus containing these compromised objects.
 
-**Nguy cơ:**
-- **Chiếm đoạt quyền kiểm soát tài khoản (Account Takeover - ATO)**
-  - **Thao tác mạo danh:** Kẻ tấn công đính kèm `access_token` thu thập được vào API header để giả mạo nạn nhân thực hiện toàn bộ chức năng: thay đổi thông tin cá nhân, đổi mật khẩu, xóa/thêm cấu hình xác thực 2FA.
-  - **Bypass xác thực:** Bỏ qua hoàn toàn các lớp bảo mật bề mặt (mật khẩu mạnh, OTP/2FA) vì token thu được đã đại diện cho một phiên làm việc hợp lệ.
-- **Rủi ro tác động hạ tầng RMM (Critical Infrastructure Threat)**
-  - **Đánh sập/Thao túng thiết bị hàng loạt (Mass Device Disruption):** Nếu tài khoản bị chiếm đoạt sở hữu quyền quản trị hệ thống RMM, kẻ tấn công có thể lợi dụng các API quản lý để gửi lệnh tắt máy, reboot, ngắt kết nối mạng hoặc hủy dịch vụ trên tất cả các Endpoint/Agent thuộc quyền quản lý của tài khoản đó.
-  - **Thực thi mã từ xa hàng loạt (Mass Remote Code Execution - RCE):** Thông qua tính năng chạy Script/Command tự động của RMM, kẻ tấn công có thể phát tán Malware, Ransomware hoặc script độc hại (đã đề xuất) để xóa sạch dữ liệu trên toàn bộ danh sách thiết bị chỉ với một lệnh duy nhất.
-  - **Mất khả năng sẵn sàng (Availability Impact - High):** Gây ngưng trệ toàn bộ hoạt động vận hành của doanh nghiệp, làm gián đoạn các dịch vụ CNTT cốt lõi.
-- **Rủi ro leo thang đặc quyền & Chiếm quyền quản trị cao nhất (Privilege Escalation)**
-  - **Tác động:** Nếu nạn nhân dính payload là Admin/Super Admin, kẻ tấn công nghiễm nhiên nắm quyền tối cao trên toàn bộ hệ thống RMM mà không cần tốn thêm công sức leo thang đặc quyền.
-  
+**Impact:**
+- **Account Takeover (ATO)**
+  - **Impersonation:** An attacker can append the stolen `access_token` to API headers to impersonate the victim and perform arbitrary actions, such as updating personal details, changing passwords, or adding/removing 2FA configurations.
+  - **Authentication Bypass:** Bypasses perimeter security controls (strong passwords, OTP/2FA) entirely because the exfiltrated token represents a valid, active session.
+- **Critical Infrastructure Threat (RMM Impact)**
+  - **Mass Device Disruption:** If the compromised account holds administrator privileges over the RMM platform, the attacker can leverage management APIs to send shutdown, reboot, network disconnect, or service termination commands across all endpoints/agents managed by the account.
+  - **Mass Remote Code Execution (RCE):** Through the RMM's automated Script/Command execution feature, an attacker can deploy malware, ransomware, or malicious scripts to wipe data across the entire fleet of devices with a single command.
+  - **Availability Impact (High):** Causes severe disruption to enterprise business operations and halts core IT infrastructure services.
+- **Privilege Escalation**
+  - **Impact:** If the victim triggered by the payload is an Admin/Super Admin, the attacker implicitly gains full administrative control over the entire RMM system without needing additional privilege escalation steps.
 
-**Vị trí**
-| Vị trí | Param |
+**Vulnerable Endpoints**
+
+| Endpoint | Parameter |
 | :--- | :--- |
 | POST /clients/ | `name` |
 | PUT /clients/ | `name` |
@@ -26,50 +26,44 @@ Mã độc sẽ tự động thực thi trên trình duyệt của bất kỳ ng
 | POST /scripts/ | `name` |
 | PUT /scripts/ | `name` |
 
+**Proof of Concept (PoC):**
 
-
-**Bằng chứng:**
-
-Kịch bản tấn công ở đây, ta sử dụng tài khoản longnbh_2 (người dùng có quyền hạn chế) sẽ thực hiện stored XSS vào tên client và khi nạn nhân (ở đây là longnbh - admin) thực hiện chức năng dropdown để tìm client trong chức năng Audit log thì sẽ kích hoạt payload dẫn tới Authorization token của nạn nhân được chuyền về cho kẻ tấn công lại webhook và từ đây kẻ tấn công chiếm đoạt hoàn toàn tài khoản nạn nhân.
+In this attack scenario, an attacker uses the account `longnbh_2` (a low-privileged user) to inject a Stored XSS payload into a client name. When the victim (`longnbh` - an administrator) opens the client selection dropdown in the Audit Log feature, the payload triggers and exfiltrates the victim's Authorization token to an attacker-controlled webhook, allowing the attacker to completely hijack the administrator account.
 
 ![image](https://github.com/Kuri119/Stored-XSS-In-Tactical-RMM-1.5.2/blob/main/POC/Screenshot%202026-10-30%20103703.png)
 ![image](https://github.com/Kuri119/Stored-XSS-In-Tactical-RMM-1.5.2/blob/main/POC/Screenshot%202026-10-30%20103743.png)
- 
 
-**Bước 1: Thực hiện điền stored XSS**
+**Step 1: Injecting the Stored XSS Payload**
 
-Để có client với tên là stored XSS thì ta có thể tạo hoặc edit tên một client đã có từ trước, đây là ta thực hiện edit một client đã có từ trước.
+To set a client name containing the Stored XSS payload, we can either create a new client or edit an existing one. In this PoC, we update an existing client name.
 
-**Chức năng edit client (PUT /clients/)**
+**Edit Client Request (`PUT /clients/`)**
 
 ![image](https://github.com/Kuri119/Stored-XSS-In-Tactical-RMM-1.5.2/blob/main/POC/Screenshot%202026-10-30%20103801.png)
 ![image](https://github.com/Kuri119/Stored-XSS-In-Tactical-RMM-1.5.2/blob/main/POC/Screenshot%202026-10-30%20103809.png)
-  
-Khi nạn nhân truy cập vào audit log, chọn dropdown client, thông báo hiện ra cho thấy script XSS đã được thực thi thành công.
+
+When the victim accesses the Audit Log and opens the client dropdown, a popup appears confirming that the XSS script executed successfully.
 
 ![image](https://github.com/Kuri119/Stored-XSS-In-Tactical-RMM-1.5.2/blob/main/POC/Screenshot%202026-10-30%20103818.png)
- 
-Cùng kịch bản này thay vì script alert() ta có thể thay bằng mã lệnh độc hại nhằm thu thập thông tin Authorization token của người dùng khi họ bị dính payload.
+
+Using the same vector, instead of a simple `alert()` script, an attacker can replace it with a malicious payload designed to exfiltrate the user's Authorization token upon execution.
 
 ![image](https://github.com/Kuri119/Stored-XSS-In-Tactical-RMM-1.5.2/blob/main/POC/Screenshot%202026-10-30%20103825.png)
- 
 
-**Bước 2: Nạn nhân khi thực hiện chức năng dropdown để chọn clients**
-Người dùng admin (longnbh) thực hiện truy cập vào audio log và chọn phần dropdown clients
+**Step 2: Victim Interacts with the Client Dropdown**
+
+The admin user (`longnbh`) accesses the Audit Log and opens the client selection dropdown menu.
 
 ![image](https://github.com/Kuri119/Stored-XSS-In-Tactical-RMM-1.5.2/blob/main/POC/Screenshot%202026-10-30%20103835.png)
 ![image](https://github.com/Kuri119/Stored-XSS-In-Tactical-RMM-1.5.2/blob/main/POC/Screenshot%202026-10-30%20103856.png)
- 
- 
 
-**Bước 3: Thay đổi mật khẩu và 2FA người dùng bắt được, chiếm quyền kiểm soát tài khoản thành công**
+**Step 3: Modifying Password & 2FA to Complete Account Takeover**
 
-Từ token có được kẻ tấn công thực hiện thao tác thay đổi mật khẩu người dùng và reset 2FA chiếm quyền kiểm soát tài khoản nạn nhân.
+Using the intercepted token, the attacker submits requests to change the victim's account password and reset 2FA, completing the account takeover.
 
 ![image](https://github.com/Kuri119/Stored-XSS-In-Tactical-RMM-1.5.2/blob/main/POC/Screenshot%202026-10-30%20103919.png)
 ![image](https://github.com/Kuri119/Stored-XSS-In-Tactical-RMM-1.5.2/blob/main/POC/Screenshot%202026-10-30%20103930.png)
- 
- 
-Mật khẩu và 2FA đã được đổi, từ đấy kẻ tấn công chiếm hoàn toàn tài khoản admin longnbh
 
-**Lưu ý:** Ta có thể thực hiện các thao tác nhúng payload tương tự trong các chức năng thêm và sửa site, script, policy và payload sẽ thực thi khi người dùng truy cập vào dropdown chứa các đối tượng bị nhúng này.
+With both the password and 2FA updated, the attacker gains full control of the `longnbh` admin account.
+
+**Note:** Similar payload injection vectors exist across the creation and modification endpoints for Sites, Scripts, and Policies. The payload executes whenever a user interacts with a dropdown menu containing these infected items.
