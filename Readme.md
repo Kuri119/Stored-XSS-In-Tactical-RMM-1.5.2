@@ -15,13 +15,15 @@ o	Mất khả năng sẵn sàng (Availability Impact - High): Gây ngưng trệ 
 o	Nếu nạn nhân dính payload là Admin/Super Admin, kẻ tấn công nghiễm nhiên nắm quyền tối cao trên toàn bộ hệ thống RMM mà không cần tốn thêm công sức leo thang đặc quyền.
 
 **Vị trí**
-POST /clients/
-PUT /clients/
-PUT /clients/sites/
-POST /automation/policies/
-PUT /automation/policies/
-POST /scripts/
-PUT /scripts/
+| Vị trí | Param |
+| :--- | :--- |
+| POST /clients/ | `name` |
+| PUT /clients/ | `name` |
+| PUT /clients/sites/ | `name` |
+| POST /automation/policies/ | `name` |
+| PUT /automation/policies/ | `name` |
+| POST /scripts/ | `name` |
+| PUT /scripts/ | `name` |
 
 
 **Bằng chứng:**
@@ -34,6 +36,7 @@ Kịch bản tấn công ở đây, ta sử dụng tài khoản longnbh_2 (ngư�
 
 **Bước 1: Thực hiện điền stored XSS**
 Để có client với tên là stored XSS thì ta có thể tạo hoặc edit tên một client đã có từ trước, đây là ta thực hiện edit một client đã có từ trước.
+
 **Chức năng edit client (PUT /clients/)**
 ![image](https://github.com/Kuri119/Stored-XSS-In-Tactical-RMM-1.5.2/blob/main/POC/Screenshot%202026-10-30%20103801.png)
 ![image](https://github.com/Kuri119/Stored-XSS-In-Tactical-RMM-1.5.2/blob/main/POC/Screenshot%202026-10-30%20103809.png)
