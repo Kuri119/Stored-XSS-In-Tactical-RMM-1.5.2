@@ -48,7 +48,7 @@ To set a client name containing the Stored XSS payload, we can either create a n
 
 When the victim accesses the Audit Log and opens the client dropdown, a popup appears confirming that the XSS script executed successfully.
 
-![image](https://github.com/Kuri119/Stored-XSS-In-Tactical-RMM-1.5.2/blob/main/POC/Screenshot%202026-10-30%20103818.png)
+![image](https://github.com/Kuri119/Stored-XSS-In-Tactical-RMM-1.5.2/blob/main/POC/Screenshot%202026-10-30%20211012.png)
 
 Using the same vector, instead of a simple `alert()` script, an attacker can replace it with a malicious payload designed to exfiltrate the user's Authorization token upon execution.
 
