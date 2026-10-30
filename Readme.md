@@ -27,6 +27,7 @@ Mã độc sẽ tự động thực thi trên trình duyệt của bất kỳ ng
 | PUT /scripts/ | `name` |
 
 
+
 **Bằng chứng:**
 
 Kịch bản tấn công ở đây, ta sử dụng tài khoản longnbh_2 (người dùng có quyền hạn chế) sẽ thực hiện stored XSS vào tên client và khi nạn nhân (ở đây là longnbh - admin) thực hiện chức năng dropdown để tìm client trong chức năng Audit log thì sẽ kích hoạt payload dẫn tới Authorization token của nạn nhân được chuyền về cho kẻ tấn công lại webhook và từ đây kẻ tấn công chiếm đoạt hoàn toàn tài khoản nạn nhân.
